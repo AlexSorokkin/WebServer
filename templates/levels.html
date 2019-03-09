@@ -2,6 +2,9 @@
 
 {% block content %}
 <body>
+<h1>Авторские уровни</h1>
+<div>Примеры заполнения можно найти в исходном коде в папке levels</div>
+<a class="btn btn-primary" href="/add_news" role="button">Добавить уровень</a>
     {% for item in news['news'] %}
         <h2>{{item["title"]}}</h2>
         <div>{{item["content"]}}</div>
