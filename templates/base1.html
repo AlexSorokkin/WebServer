@@ -7,7 +7,7 @@
     <meta name="author" content="">
     <link rel="icon" href="../../../../favicon.ico">
 
-    <title>Carousel Template for Bootstrap</title>
+    <title>AR</title>
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -32,14 +32,14 @@
             <li class="nav-item active">
               <a class="nav-link" href="/levels">Levels <span class="sr-only">(current)</span></a>
             </li>
-              <a class="btn btn-primary" href="/download" role="button">Download Game(ZIP)</a>
+              <a class="btn btn-primary" href="https://github.com/AlexSorokkin/WebServer" role="button">Download Game(GitHub)</a>
           </ul>
             {% if "username" in session %}
             <a class="navbar-brand" href="/logout">{{session['username']}}</a>
             {% endif %}
             {% if "username" not in session %}
-            <a class="btn btn-primary" href="/login" role="button">Sign Up</a>
-            <a class="btn btn-primary" href="/registr" role="button">Register</a>
+            <a class="btn btn-primary" href="/login" role="button">Sign In</a>
+            <a class="btn btn-primary" href="/registr" role="button">Sign Up</a>
             {% endif %}
         </div>
       </nav>

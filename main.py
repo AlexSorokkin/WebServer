@@ -104,13 +104,7 @@ class NewsModel:
 
     def get_all(self, user_id=None, set_up=None):
         cursor = self.connection.cursor()
-        if user_id:
-            a = [str(user_id['user_id'])]
-        q = session['username']
-        if q != 'admin':
-            cursor.execute("SELECT * FROM posts WHERE user_id = ?", a)
-        else:
-            cursor.execute("SELECT * FROM posts")
+        cursor.execute("SELECT * FROM posts")
         rows = cursor.fetchall()
         if set_up:
             rows = sorted(rows, key=bySlovo)
@@ -343,13 +337,6 @@ def get_users():
         users.append(i[1])
     return render_template('index.html', users=users)
 
-
-@app.route('/test',  methods=['GET', 'POST'])
-def test():
-    if request.method == 'POST':
-        print(request.form['email'])
-        return render_template('test.html')
-    return render_template('test.html')
 
 
 if __name__ == '__main__':
