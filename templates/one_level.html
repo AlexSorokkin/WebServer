@@ -1,0 +1,13 @@
+{% extends "base1.html" %}
+
+{% block content %}
+<body>
+<a class="btn btn-primary" href="/levels" role="button">Назад</a>
+<hr class="featurette-divider">
+        <h2>Название: {{item[1]}}</h2>
+        <div>Описание: {{item[2]}}</div>
+<div>Локация(в data): {{item[3]}}</div>
+<div></div>
+<div>Автор: {{author}}</div>
+</body>
+{% endblock %}

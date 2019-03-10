@@ -81,11 +81,11 @@ class NewsModel:
         cursor.close()
         self.connection.commit()
 
-    def insert(self, title, content, level1, user_id):
+    def insert(self, title, content, level_img, level1, user_id):
         cursor = self.connection.cursor()
         cursor.execute('''INSERT INTO posts 
-                          (title, content, level1, user_id) 
-                          VALUES (?,?,?,?)''', (title, content, level1, str(user_id)))
+                          (title, content, level_img, level1, user_id) 
+                          VALUES (?,?,?,?,?)''', (title, content, level_img, level1, str(user_id)))
         cursor.close()
         self.connection.commit()
 
@@ -296,17 +296,16 @@ def get_news():
     return render_template('levels.html', news=news2)
 
 
-@app.route('/news/<int:news_id>',  methods=['GET', 'DELETE', "POST"])
+@app.route('/levels/<int:news_id>',  methods=['GET', 'DELETE', "POST"])
 def get_one_news(news_id):
     if request.method == 'POST':
         news.delete(news_id)
         return redirect('/news')
     if request.method == 'GET':
         new = news.get(news_id)
-        return jsonify({'news': new})
-    else:
-        new = news.get(news_id)
-        return jsonify({'news': new})
+        author = user_model.get(new[5])
+        author = author[1]
+        return render_template('one_level.html', item=new, author=author)
 
 
 @app.errorhandler(404)

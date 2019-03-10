@@ -5,9 +5,12 @@
 <h1>Авторские уровни</h1>
 <div>Примеры заполнения можно найти в исходном коде в папке level</div>
 <a class="btn btn-primary" href="/add_post" role="button">Добавить уровень</a>
-    {% for item in news['news'] %}
-        <h2>{{item["title"]}}</h2>
-        <div>{{item["content"]}}</div>
+<hr class="featurette-divider">
+    {% for item in news %}
+        <h2>{{item[1]}}</h2>
+        <div>{{item[2]}}</div>
+        <a class="btn btn-primary" href="/levels/{{item[0]}}" role="button">Подробнее</a>
+    <hr class="featurette-divider">
     {% endfor %}
 </body>
 {% endblock %}
