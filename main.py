@@ -1,10 +1,11 @@
 import sqlite3
-from flask import Flask, render_template, redirect, session, request, jsonify, make_response
+from flask import Flask, render_template, redirect, session, request, jsonify, make_response, send_from_directory
 from wtforms import PasswordField, BooleanField
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, TextAreaField
 from wtforms.validators import DataRequired
 from flask_restful import reqparse, abort, Api, Resource
+import random
 
 app = Flask(__name__)
 api = Api(app)
@@ -208,6 +209,11 @@ def add_news():
         level1 = request.files['file']
         level1 = level1.read()
         news.insert(title, content, level_img, level1, session['user_id'])
+        a = news.get_all()
+        a = a[-1][0]
+        f = open('static/levels/{}.txt'.format(a), 'wb')
+        f.write(level1)
+        f.close()
         return redirect("/index")
     return render_template('add_post.html',
                            username=session['username'])
@@ -238,6 +244,10 @@ def reg():
 
 @app.route('/adminka_for_me_only_jester', methods=['GET', 'POST'])
 def adm():
+    if 'username' not in session:
+        return redirect('/login')
+    if session['username'] != 'alexsorokkin@gmail.com':
+        return redirect('/index')
     news2 = news.get_all(session, tag)
     return render_template('admin.html', news=news2)
 
@@ -254,6 +264,17 @@ def tag_off():
     global tag
     tag = None
     return redirect('/index')
+
+
+@app.route('/levels_get')
+def get_post():
+    new = news.get_all()
+    length = len(new)
+    ran = random.randint(0, length-1)
+    new = new[ran]
+    f = open('static/levels/{}.txt'.format(new[0]), 'r')
+    stroka = f.read()
+    return stroka
 
 
 @app.route('/levels',  methods=['GET', 'POST'])

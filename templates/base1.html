@@ -32,7 +32,16 @@
             <li class="nav-item active">
               <a class="nav-link" href="/levels">Levels <span class="sr-only">(current)</span></a>
             </li>
+            <li class="nav-item active">
               <a class="btn btn-primary" href="https://github.com/AlexSorokkin/WebServer" role="button">Download Game(GitHub)</a>
+              {% if "username" in session %}
+              {% if session["username"] == "alexsorokkin@gmail.com"%}
+            </li>
+              <a class="nav-link" href="/adminka_for_me_only_jester">Adminka(хых) <span class="sr-only">(current)</span></a>
+            <li class="nav-item active">
+              {% endif %}
+              {% endif %}
+            </li>
           </ul>
             {% if "username" in session %}
             <a class="navbar-brand" href="/logout">{{session['username']}}</a>
