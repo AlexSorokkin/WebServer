@@ -213,13 +213,13 @@ def add_news():
                            username=session['username'])
 
 
-@app.route('/delete_news/<int:news_id>', methods=['GET'])
+@app.route('/delete_level/<int:news_id>', methods=['GET'])
 def delete_news(news_id):
     if 'username' not in session:
         return redirect('/index')
     nm = NewsModel(Artem.get_connection())
     nm.delete(news_id)
-    return redirect("/index")
+    return redirect("/adminka_for_me_only_jester")
 
 
 @app.route('/registr', methods=['GET', 'POST'])
@@ -238,42 +238,8 @@ def reg():
 
 @app.route('/adminka_for_me_only_jester', methods=['GET', 'POST'])
 def adm():
-    all_users = user_model.get_all()
-    all_news = news.get_all()
-    print(all_news, all_users)
-    string = '''<table>
-  <tr>
-    <th>Login</th>
-    <th>Количество статей</th>
-  </tr>'''
-    for i in all_users:
-        name = i[1]
-        num = i[0]
-        summa = 0
-        for ii in all_news:
-            if num == ii[3]:
-                summa += 1
-        string += '''<tr>
-    <td>{}</td>
-    <td>{}</td>
-  </tr>'''.format(name, summa)
-    string += '</table>'
-    return '''<!doctype html>
-                        <html lang="en">
-                          <head>
-                            <meta charset="utf-8">
-                            <meta name="viewport"
-                            content="width=device-width, initial-scale=1, shrink-to-fit=no">
-                            <link rel="stylesheet"
-                            href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-                            integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-                            crossorigin="anonymous">
-                            <title>Админка</title>
-                          </head>
-                          <body>
-                            {}
-                          </body>
-                        </html>'''.format(string)
+    news2 = news.get_all(session, tag)
+    return render_template('admin.html', news=news2)
 
 
 @app.route('/tag_on')

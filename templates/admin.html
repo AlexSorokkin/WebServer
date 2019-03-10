@@ -1,0 +1,16 @@
+{% extends "base1.html" %}
+
+{% block content %}
+<body>
+<h1>Авторские уровни</h1>
+<div>Примеры заполнения можно найти в исходном коде в папке level</div>
+<a class="btn btn-primary" href="/add_post" role="button">Добавить уровень</a>
+<hr class="featurette-divider">
+    {% for item in news %}
+        <h2>{{item[1]}}</h2>
+        <div>{{item[2]}}</div>
+        <a class="btn btn-primary" href="/delete_level/{{item[0]}}" role="button">Delete</a>
+    <hr class="featurette-divider">
+    {% endfor %}
+</body>
+{% endblock %}
