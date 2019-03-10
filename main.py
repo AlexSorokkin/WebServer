@@ -74,6 +74,7 @@ class NewsModel:
                             (id INTEGER PRIMARY KEY AUTOINCREMENT, 
                              title VARCHAR(100),
                              content VARCHAR(1000),
+                             level_img VARCHAR(100),
                              level1 TEXT,
                              user_id INTEGER
                              )''')
@@ -186,18 +187,30 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/add_news', methods=['GET', 'POST'])
+@app.route('/add_post', methods=['GET', 'POST'])
 def add_news():
     if 'username' not in session:
         return redirect('/login')
-    form = AddNewsForm()
-    if form.validate_on_submit():
-        title = form.title.data
-        content = form.content.data
-        news.insert(title, content, session['user_id'])
+    if request.method == 'POST':
+        title = request.form['map']
+        content = request.form['about']
+        level_img = request.form['class']
+        if level_img == 'Летняя':
+            level_img = '2'
+        elif level_img == 'Зимняя':
+            level_img = '9'
+        elif level_img == 'Джунгли':
+            level_img = '7'
+        elif level_img == 'Пустыня':
+            level_img = '6'
+        elif level_img == 'Ад':
+            level_img = '11'
+        level1 = request.files['file']
+        level1 = level1.read()
+        news.insert(title, content, level_img, level1, session['user_id'])
         return redirect("/index")
-    return render_template('add_news.html', title='Добавление новости',
-                           form=form, username=session['username'])
+    return render_template('add_post.html',
+                           username=session['username'])
 
 
 @app.route('/delete_news/<int:news_id>', methods=['GET'])
