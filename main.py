@@ -160,6 +160,20 @@ class UsersModel:
         row = cursor.fetchone()
         return (True, row[0]) if row else (False,)
 
+    def double_exist(self, user_name):
+        cursor = self.connection.cursor()
+        cursor.execute("SELECT * FROM users WHERE user_name = ?",
+                       [user_name])
+        row = cursor.fetchone()
+        return (True, row[0]) if row else (False,)
+
+    def delete(self, user_id):
+        cursor = self.connection.cursor()
+        cursor.execute("DELETE FROM users WHERE `id`=?",
+                       [user_id])
+        cursor.close()
+        self.connection.commit()
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -233,6 +247,10 @@ def reg():
     if request.method == 'POST':
         user_name = request.form['email']
         password = request.form['pass']
+        double_exist = user_model.double_exist(user_name)
+        print(double_exist)
+        if double_exist != (False,):
+            return redirect('/registr')
         user_model.insert(user_name, password)
         exists = user_model.exists(user_name, password)
         if (exists[0]):
@@ -250,6 +268,16 @@ def adm():
         return redirect('/index')
     news2 = news.get_all(session, tag)
     return render_template('admin.html', news=news2)
+
+
+@app.route('/adminka_for_me_only_jester/<int:id>', methods=['GET', 'POST'])
+def adm1(id):
+    if 'username' not in session:
+        return redirect('/login')
+    if session['username'] != 'alexsorokkin@gmail.com':
+        return redirect('/index')
+    user_model.delete(int(id))
+    return redirect('/adminka_for_me_only_jester')
 
 
 @app.route('/tag_on')
@@ -336,7 +364,6 @@ def get_users():
     for i in users2:
         users.append(i[1])
     return render_template('index.html', users=users)
-
 
 
 if __name__ == '__main__':
