@@ -274,7 +274,8 @@ def get_post():
     new = new[ran]
     f = open('static/levels/{}.txt'.format(new[0]), 'r')
     stroka = f.read()
-    return stroka
+    stroka = str(new[3])+stroka
+    return jsonify({'ok': stroka})
 
 
 @app.route('/levels',  methods=['GET', 'POST'])
