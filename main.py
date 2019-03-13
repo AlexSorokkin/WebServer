@@ -1,4 +1,4 @@
-import sqlite3
+import sqlite3  # import всего нужного
 from flask import Flask, render_template, redirect, session, request, jsonify, make_response, send_from_directory
 from wtforms import PasswordField, BooleanField
 from flask_wtf import FlaskForm
@@ -7,7 +7,7 @@ from wtforms.validators import DataRequired
 from flask_restful import reqparse, abort, Api, Resource
 import random
 
-app = Flask(__name__)
+app = Flask(__name__)  # создание приложения
 api = Api(app)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 parser = reqparse.RequestParser()
@@ -19,41 +19,41 @@ parser2.add_argument('user_name', required=True)
 parser2.add_argument('password_hash', required=True)
 
 
-def bySlovo(slovo):
+def bySlovo(slovo):  # сортировка уровней
     return slovo[1]
 
 
-def abort_if_news_not_found(news_id):
+def abort_if_news_not_found(news_id):  # error
     if not NewsModel(Artem.get_connection()).get(news_id):
         abort(404, message="News {} not found".format(news_id))
 
 
-def abort_if_users_not_found(user_id):
+def abort_if_users_not_found(user_id):  # error
     if not UsersModel(Artem.get_connection()).get(user_id):
         abort(404, message="Users {} not found".format(user_id))
 
 
-class AddNewsForm(FlaskForm):
+class AddNewsForm(FlaskForm):  # form добавления новости
     title = StringField('Заголовок новости', validators=[DataRequired()])
     content = TextAreaField('Текст новости', validators=[DataRequired()])
     submit = SubmitField('Добавить')
 
 
-class LoginForm(FlaskForm):
+class LoginForm(FlaskForm):  # form входа
     username = StringField('Логин', validators=[DataRequired()])
     password = PasswordField('Пароль', validators=[DataRequired()])
     remember_me = BooleanField('Запомнить меня')
     submit = SubmitField('Войти')
 
 
-class RegForm(FlaskForm):
+class RegForm(FlaskForm):  # form регистрации
     username = StringField('Логин', validators=[DataRequired()])
     password = PasswordField('Пароль', validators=[DataRequired()])
     remember_me = BooleanField('Запомнить меня')
     submit = SubmitField('Зарегестрироваться')
 
 
-class DB:
+class DB:  # база данных
     def __init__(self):
         conn = sqlite3.connect('server.db', check_same_thread=False)
         self.conn = conn
@@ -65,7 +65,7 @@ class DB:
         self.conn.close()
 
 
-class NewsModel:
+class NewsModel:  # class постов в базе данных
     def __init__(self, connection):
         self.connection = connection
 
@@ -119,7 +119,7 @@ class NewsModel:
         self.connection.commit()
 
 
-class UsersModel:
+class UsersModel:  # class юзеров в базе данных
     def __init__(self, connection):
         self.connection = connection
 
@@ -175,7 +175,7 @@ class UsersModel:
         self.connection.commit()
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])  # страница входа
 def login():
     if request.method == 'POST':
         user_name = request.form['email']
@@ -189,7 +189,7 @@ def login():
     return render_template('login.html')
 
 
-@app.route('/logout')
+@app.route('/logout')  # страница выхода
 def logout():
     session.pop('username',0)
     session.pop('user_id',0)
@@ -197,12 +197,12 @@ def logout():
 
 
 @app.route('/')
-@app.route('/index', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])  # основная страница
 def index():
     return render_template('index.html')
 
 
-@app.route('/add_post', methods=['GET', 'POST'])
+@app.route('/add_post', methods=['GET', 'POST'])  # страница добавления лвла
 def add_news():
     if 'username' not in session:
         return redirect('/login')
@@ -233,7 +233,7 @@ def add_news():
                            username=session['username'])
 
 
-@app.route('/delete_level/<int:news_id>', methods=['GET'])
+@app.route('/delete_level/<int:news_id>', methods=['GET'])  # страница удаления лвла
 def delete_news(news_id):
     if 'username' not in session:
         return redirect('/index')
@@ -242,7 +242,7 @@ def delete_news(news_id):
     return redirect("/adminka_for_me_only_jester")
 
 
-@app.route('/registr', methods=['GET', 'POST'])
+@app.route('/registr', methods=['GET', 'POST'])  # страница регистрации
 def reg():
     if request.method == 'POST':
         user_name = request.form['email']
@@ -260,7 +260,7 @@ def reg():
     return render_template('registr.html')
 
 
-@app.route('/adminka_for_me_only_jester', methods=['GET', 'POST'])
+@app.route('/adminka_for_me_only_jester', methods=['GET', 'POST'])  # страница админки
 def adm():
     if 'username' not in session:
         return redirect('/login')
@@ -270,7 +270,7 @@ def adm():
     return render_template('admin.html', news=news2)
 
 
-@app.route('/adminka_for_me_only_jester/<int:id>', methods=['GET', 'POST'])
+@app.route('/adminka_for_me_only_jester/<int:id>', methods=['GET', 'POST'])  # страница удаления лвла
 def adm1(id):
     if 'username' not in session:
         return redirect('/login')
@@ -280,14 +280,14 @@ def adm1(id):
     return redirect('/adminka_for_me_only_jester')
 
 
-@app.route('/tag_on')
+@app.route('/tag_on')  # страница изменеия сортировки
 def tag_on():
     global tag
     tag = 1
     return redirect('/index')
 
 
-@app.route('/tag_off')
+@app.route('/tag_off')  # страница изменеия сортировки
 def tag_off():
     global tag
     tag = None
@@ -306,13 +306,13 @@ def get_post():
     return jsonify({'ok': stroka})
 
 
-@app.route('/levels',  methods=['GET', 'POST'])
+@app.route('/levels',  methods=['GET', 'POST'])  # страница всех лвлов
 def get_news():
     news2 = news.get_all(session, tag)
     return render_template('levels.html', news=news2)
 
 
-@app.route('/levels/<int:news_id>',  methods=['GET', 'DELETE', "POST"])
+@app.route('/levels/<int:news_id>',  methods=['GET', 'DELETE', "POST"])  # страница определённого лвла
 def get_one_news(news_id):
     if request.method == 'POST':
         news.delete(news_id)
@@ -324,7 +324,7 @@ def get_one_news(news_id):
         return render_template('one_level.html', item=new, author=author)
 
 
-@app.errorhandler(404)
+@app.errorhandler(404)  # страница ошибки 404
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
 
